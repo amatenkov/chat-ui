@@ -11,7 +11,7 @@ import {
 import type { Conversation } from "$lib/types/Conversation";
 import type { MessageUpdate } from "$lib/types/MessageUpdate";
 
-const MAX_N_PAGES_SCRAPE = 10 as const;
+const MAX_N_PAGES_SCRAPE = 5 as const;
 const MAX_N_PAGES_EMBED = 5 as const;
 
 export async function runWebSearch(
@@ -39,7 +39,8 @@ export async function runWebSearch(
 
 	try {
 		webSearch.searchQuery = await generateQuery(messages);
-		appendUpdate("Searching Google", [webSearch.searchQuery]);
+		console.log('Web search query: ', webSearch.searchQuery)
+		appendUpdate("Сгенерирован запрос для поиска", [webSearch.searchQuery]);
 		const results = await searchWeb(webSearch.searchQuery);
 		webSearch.results =
 			(results.organic_results &&
@@ -55,13 +56,13 @@ export async function runWebSearch(
 
 		let paragraphChunks: { source: WebSearchSource; text: string }[] = [];
 		if (webSearch.results.length > 0) {
-			appendUpdate("Browsing results");
+			appendUpdate("Обработка результатов");
 			const promises = webSearch.results.map(async (result) => {
 				const { link } = result;
 				let text = "";
 				try {
 					text = await parseWeb(link);
-					appendUpdate("Browsing webpage", [link]);
+					appendUpdate("Обработка страницы", [link]);
 				} catch (e) {
 					console.error(`Error parsing webpage "${link}"`, e);
 				}
@@ -78,8 +79,9 @@ export async function runWebSearch(
 			throw new Error("No results found for this search query");
 		}
 
-		appendUpdate("Extracting relevant information");
+		appendUpdate("Получение релевантной информации");
 		const topKClosestParagraphs = 8;
+		
 		const texts = paragraphChunks.map(({ text }) => text);
 		const indices = await findSimilarSentences(prompt, texts, {
 			topK: topKClosestParagraphs,
@@ -103,7 +105,7 @@ export async function runWebSearch(
 	} catch (searchError) {
 		if (searchError instanceof Error) {
 			appendUpdate(
-				"An error occurred with the web search",
+				"Произошла ошибка",
 				[JSON.stringify(searchError.message)],
 				"error"
 			);

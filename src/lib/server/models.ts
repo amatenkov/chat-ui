@@ -70,11 +70,13 @@ const modelsRaw = z
 			webSearchQueryPromptTemplate: z
 				.string()
 				.default(
-					"{{userMessageToken}}" +
-						'My question is: "{{message.content}}". ' +
-						"Based on the conversation history (my previous questions are: {{previousMessages}}), give me an appropriate query to answer my question for google search. You should not say more than query. You should not say any words except the query. For the context, today is {{currentDate}}" +
-						"{{userMessageEndToken}}" +
-						"{{assistantMessageToken}}"
+					"{{message.content}}"
+				// .default(
+				// 	"{{userMessageToken}}" +
+				// 		'Мой вопрос: "{{message.content}}". ' +
+				// 		"На основе моих прошлых сообщений (мои прошлые сообщения: {{previousMessages}}), напиши подходящий запрос для google search. Не пиши ничего больше, кроме запроса. Ты не должен писать никаких слов, кроме текста запроса. Для контекста, сегодня {{currentDate}}" +
+				// 		"{{userMessageEndToken}}" +
+				// 		"{{assistantMessageToken}}"
 				),
 			promptExamples: z
 				.array(

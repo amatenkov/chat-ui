@@ -86,7 +86,7 @@
 		>
 			<div class="flex w-full flex-1 border-none bg-transparent">
 				<ChatInput
-					placeholder="Ask anything"
+					placeholder="Введите запрос"
 					bind:value={message}
 					on:submit={handleSubmit}
 					on:keypress={() => {
@@ -119,26 +119,6 @@
 				{/if}
 			</div>
 		</form>
-		<div class="mt-2 flex justify-between self-stretch px-1 text-xs text-gray-400/90 max-sm:gap-2">
-			<p>
-				Model: <a
-					href={currentModel.modelUrl || "https://huggingface.co/" + currentModel.name}
-					target="_blank"
-					rel="noreferrer"
-					class="hover:underline">{currentModel.displayName}</a
-				> <span class="max-sm:hidden">·</span><br class="sm:hidden" /> Generated content may be inaccurate
-				or false.
-			</p>
-			{#if messages.length}
-				<button
-					class="flex flex-none items-center hover:text-gray-400 hover:underline max-sm:rounded-lg max-sm:bg-gray-50 max-sm:px-2.5 dark:max-sm:bg-gray-800"
-					type="button"
-					on:click={() => dispatch("share")}
-				>
-					<CarbonExport class="text-[.6rem] sm:mr-1.5 sm:text-primary-500" />
-					<div class="max-sm:hidden">Share this conversation</div>
-				</button>
-			{/if}
-		</div>
+		
 	</div>
 </div>

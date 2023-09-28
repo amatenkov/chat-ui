@@ -13,7 +13,8 @@ interface Parameters {
 }
 export async function generateFromDefaultEndpoint(
 	prompt: string,
-	parameters?: Partial<Parameters>
+	parameters?: Partial<Parameters>,
+	preprompt: string = ""
 ): Promise<string> {
 	const newParameters = {
 		...defaultModel.parameters,
@@ -49,17 +50,22 @@ export async function generateFromDefaultEndpoint(
 			},
 		});
 	} else {
+		console.log('generateFromDefaultEndpoint params', JSON.stringify({
+			parameters: newParameters,
+			preprompt: preprompt,
+			messages: [{from: 'user', content: prompt}],
+		}))
+
 		resp = await fetch(randomEndpoint.url, {
 			headers: {
-				"Content-Type": "application/json",
-				Authorization: randomEndpoint.authorization,
+				"Content-Type": "application/json"
 			},
 			method: "POST",
 			body: JSON.stringify({
 				parameters: newParameters,
-				inputs: prompt,
-			}),
-			signal: abortController.signal,
+				preprompt: preprompt,
+				messages: [{from: 'user', content: prompt}],
+			})
 		});
 	}
 
@@ -86,6 +92,9 @@ export async function generateFromDefaultEndpoint(
 
 	// Close the reader when done
 	reader.releaseLock();
+
+	console.log('Model raw result:', result)
+	return result;
 
 	let results;
 	if (result.startsWith("data:")) {

@@ -5,6 +5,7 @@ import type { GoogleParameters } from "serpapi";
 
 // Show result as JSON
 export async function searchWeb(query: string) {
+	console.log('searchWeb start')
 	if (SERPER_API_KEY) {
 		return await searchWebSerper(query);
 	}
@@ -40,6 +41,7 @@ export async function searchWebSerper(query: string) {
 		);
 	}
 
+	console.log('searchWeb end', data["organic"] ?? [])
 	return {
 		organic_results: data["organic"] ?? [],
 	};

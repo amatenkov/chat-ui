@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		_id: new ObjectId(),
 		title:
 			title ||
-			"Untitled " + ((await collections.conversations.countDocuments(authCondition(locals))) + 1),
+			"Диалог " + ((await collections.conversations.countDocuments(authCondition(locals))) + 1),
 		messages,
 		model: values.model,
 		createdAt: new Date(),

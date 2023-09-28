@@ -34,7 +34,7 @@
 		href={`${base}/`}
 		class="flex rounded-lg border bg-white px-2 py-0.5 text-center shadow-sm hover:shadow-none dark:border-gray-600 dark:bg-gray-700"
 	>
-		New Chat
+		Новый диалог
 	</a>
 </div>
 <div
@@ -79,14 +79,14 @@
 		type="button"
 		class="flex h-9 flex-none items-center gap-1.5 rounded-lg pl-3 pr-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
 	>
-		Theme
+		Переключить тему
 	</button>
 	<button
 		on:click={() => dispatch("clickSettings")}
 		type="button"
 		class="flex h-9 flex-none items-center gap-1.5 rounded-lg pl-3 pr-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
 	>
-		Settings
+		Настройки
 	</button>
 	{#if PUBLIC_APP_NAME === "HuggingChat"}
 		<a

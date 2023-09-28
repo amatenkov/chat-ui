@@ -25,20 +25,16 @@ export async function buildPrompt({
 	if (webSearch && webSearch.context) {
 		const messagesWithoutLastUsrMsg = messages.slice(0, -1);
 		const lastUserMsg = messages.slice(-1)[0];
-		const currentDate = format(new Date(), "MMMM d, yyyy");
+		const currentDate = format(new Date(), "yyyy.MM.dd");
 		messages = [
-			...messagesWithoutLastUsrMsg,
+			//...messagesWithoutLastUsrMsg,
 			{
 				from: "user",
-				content: `Please answer my question "${lastUserMsg.content}" using the supplied context below (paragraphs from various websites). For the context, today is ${currentDate}: 
-				=====================
-				${webSearch.context}
-				=====================
-				So my question is "${lastUserMsg.content}"`,
+				content: `Ответь на запрос "${lastUserMsg.content}" используя знания из текста ниже.\n${webSearch.context}`,
 			},
 		];
 	}
-
+	// console.log('messages', messages)
 	return (
 		model
 			.chatPromptRender({ messages, preprompt })

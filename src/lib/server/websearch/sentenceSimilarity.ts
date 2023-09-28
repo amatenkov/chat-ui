@@ -1,5 +1,7 @@
 import type { Tensor } from "@xenova/transformers";
 import { pipeline, dot } from "@xenova/transformers";
+//load Candle Bert Module wasm module
+import init, { Model } from "./build/m.js";
 
 // see here: https://github.com/nmslib/hnswlib/blob/359b2ba87358224963986f709e593d799064ace6/README.md?plain=1#L34
 function innerProduct(tensor1: Tensor, tensor2: Tensor) {
@@ -16,8 +18,10 @@ export async function findSimilarSentences(
 	sentences: string[],
 	{ topK = 5 }: { topK: number }
 ) {
+
 	const input = [query, ...sentences];
 	const output: Tensor = await extractor(input, { pooling: "mean", normalize: true });
+	console.log('findSimilarSentences extractor output', output)
 
 	const queryTensor: Tensor = output[0];
 	const sentencesTensor: Tensor = output.slice([1, input.length - 1]);
