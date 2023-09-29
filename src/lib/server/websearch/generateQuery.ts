@@ -15,6 +15,13 @@ export async function generateQuery(messages: Message[]) {
 	// });
 	const prepromt = ""
 	const searchQuery = await generateFromDefaultEndpoint("Тебе предстоит ответить на запрос пользователя. Если ты не знаешь точно то, о чем говорит пользователь, сгенерируй запрос для google search. Запрос пользователя: "+lastMessage.content, {}, prepromt);
+	
+	const regex = /"([^"]+)"/;
+	const matches = searchQuery.match(regex);
+
+	if (matches && matches.length > 1) {
+		searchQuery = matches[1];
+	}
 	console.log('searchQuery', searchQuery)
 	// .then((query) => {
 	// 	// example of generating google query:

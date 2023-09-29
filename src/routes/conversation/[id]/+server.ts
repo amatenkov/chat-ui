@@ -269,17 +269,17 @@ export async function POST({ request, fetch, locals, params, getClientAddress })
 				inputData.messages = [{from: 'user', content: prompt}]
 			}
 			
-			// if(inputData.messages.length > 10)
-			// 	inputData.messages = inputData.messages.slice(-10);
+			 if(inputData.messages.length > 1)
+			 	inputData.messages = inputData.messages.slice(-1);
 
-			const concatenatedContent = messages.reduce((accumulator, message) => {
-				if (message.from === 'user') {
-					accumulator += message.content + ' '; // Add a space for separation
-				}
-				return accumulator;
-			}, '').trim().slice(0, 2048);
+			// const concatenatedContent = messages.reduce((accumulator, message) => {
+			// 	if (message.from === 'user') {
+			// 		accumulator += message.content + ' '; // Add a space for separation
+			// 	}
+			// 	return accumulator;
+			// }, '').trim().slice(0, 2048);
 
-			inputData.messages = [{from: 'user', content: concatenatedContent}]//.map(m => { m.content = m.content.slice(0, 5000) })
+			// inputData.messages = [{from: 'user', content: concatenatedContent}]//.map(m => { m.content = m.content.slice(0, 5000) })
 			
 			// Fetch text data from the Flask API asynchronously
 			try {
