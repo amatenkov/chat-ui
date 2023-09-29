@@ -222,6 +222,13 @@ export async function POST({ request, fetch, locals, params, getClientAddress })
 
 				let retries = 0;
 
+				await fetch(randomEndpoint.url+'/reset', {
+					headers: {
+						"Content-Type": "application/json"
+					},
+					method: "GET"
+				});
+				
 				while (retries < maxRetries) {
 					try {
 						const response = await fetch(apiUrl, requestOptions);
