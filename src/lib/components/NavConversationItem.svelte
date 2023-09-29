@@ -40,7 +40,7 @@
 		<button
 			type="button"
 			class="flex h-5 w-5 items-center justify-center rounded md:hidden md:group-hover:flex"
-			title="Confirm delete action"
+			title="Удалить"
 			on:click|preventDefault={() => dispatch("deleteConversation", conv.id)}
 		>
 			<CarbonCheckmark class="text-xs text-gray-400 hover:text-gray-500 dark:hover:text-gray-300" />
@@ -48,7 +48,7 @@
 		<button
 			type="button"
 			class="flex h-5 w-5 items-center justify-center rounded md:hidden md:group-hover:flex"
-			title="Cancel delete action"
+			title="Отмена"
 			on:click|preventDefault={() => {
 				confirmDelete = false;
 			}}
@@ -59,9 +59,9 @@
 		<button
 			type="button"
 			class="flex h-5 w-5 items-center justify-center rounded md:hidden md:group-hover:flex"
-			title="Edit conversation title"
+			title="Редактировать заголовок"
 			on:click|preventDefault={() => {
-				const newTitle = prompt("Edit this conversation title:", conv.title);
+				const newTitle = prompt("Введите заголовок для диалога:", conv.title);
 				if (!newTitle) return;
 				dispatch("editConversationTitle", { id: conv.id, title: newTitle });
 			}}
@@ -72,7 +72,7 @@
 		<button
 			type="button"
 			class="flex h-5 w-5 items-center justify-center rounded md:hidden md:group-hover:flex"
-			title="Delete conversation"
+			title="Удалить заголовок"
 			on:click|preventDefault={(event) => {
 				if (event.shiftKey) {
 					dispatch("deleteConversation", conv.id);

@@ -21,7 +21,7 @@
 			});
 
 			if (!res.ok) {
-				error.set("Error while creating conversation, try again.");
+				error.set("Произошла ошибка при создании диалога. Попробуйте ещё раз.");
 				console.error("Error while creating conversation: " + (await res.text()));
 				return;
 			}

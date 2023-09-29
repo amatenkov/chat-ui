@@ -76,7 +76,7 @@
 			});
 
 			if (!res.ok) {
-				$error = "Error while editing title, try again.";
+				$error = "Ошибка редактирования заголовка. Попробуйте ещё раз";
 				return;
 			}
 
@@ -105,9 +105,7 @@
 
 <svelte:head>
 	<title>{PUBLIC_APP_NAME}</title>
-	<meta name="description" content="The first open source alternative to ChatGPT. 💪" />
-	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:site" content="@huggingface" />
+	<meta name="description" content="Демо семантического поиска НТР" />
 	<meta property="og:title" content={PUBLIC_APP_NAME} />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="{PUBLIC_ORIGIN || $page.url.origin}{base}" />
