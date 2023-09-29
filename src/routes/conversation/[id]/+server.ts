@@ -176,19 +176,19 @@ export async function POST({ request, fetch, locals, params, getClientAddress })
 				const lastMessage = messages[messages.length - 1];
 				if (lastMessage) {
 					// We could also check if PUBLIC_ASSISTANT_MESSAGE_TOKEN is present and use it to slice the text
-					if (generated_text.startsWith(prompt)) {
-						generated_text = generated_text.slice(prompt.length);
-					}
-					generated_text = trimSuffix(
-						trimPrefix(generated_text, "<|startoftext|>"),
-						PUBLIC_SEP_TOKEN
-					).trimEnd();
-					// remove the stop tokens
-					for (const stop of [...(model?.parameters?.stop ?? []), "<|endoftext|>"]) {
-						if (generated_text.endsWith(stop)) {
-							generated_text = generated_text.slice(0, -stop.length).trimEnd();
-						}
-					}
+					// if (generated_text.startsWith(prompt)) {
+					// 	generated_text = generated_text.slice(prompt.length);
+					// }
+					// generated_text = trimSuffix(
+					// 	trimPrefix(generated_text, "<|startoftext|>"),
+					// 	PUBLIC_SEP_TOKEN
+					// ).trimEnd();
+					// // remove the stop tokens
+					// for (const stop of [...(model?.parameters?.stop ?? []), "<|endoftext|>"]) {
+					// 	if (generated_text.endsWith(stop)) {
+					// 		generated_text = generated_text.slice(0, -stop.length).trimEnd();
+					// 	}
+					// }
 					lastMessage.content = generated_text;
 
 					await collections.conversations.updateOne(
@@ -198,7 +198,7 @@ export async function POST({ request, fetch, locals, params, getClientAddress })
 						{
 							$set: {
 								messages,
-								title: conv.title, //(await summarize(newPrompt)) ?? conv.title,
+								title:  conv.title,//(await summarize(newPrompt)) ?? conv.title,
 								updatedAt: new Date(),
 							},
 						}
@@ -320,9 +320,6 @@ export async function POST({ request, fetch, locals, params, getClientAddress })
 						if (date && date > promptedAt) {
 							saveLast(lastMessage.content);
 						}
-						if (done) {
-							break;
-						}
 
 						// otherwise we just concatenate tokens
 						lastMessage.content += chunk;
@@ -413,7 +410,7 @@ export async function POST({ request, fetch, locals, params, getClientAddress })
 				{
 					$set: {
 						messages,
-						title: conv.title, //(await summarize(newPrompt)) ?? conv.title,
+						title: conv.title,//(await summarize(newPrompt)) ?? conv.title,
 						updatedAt: new Date(),
 					},
 				}

@@ -56,6 +56,13 @@ export async function generateFromDefaultEndpoint(
 			messages: [{from: 'user', content: prompt}],
 		}))
 
+		await fetch(randomEndpoint.url+'/reset', {
+			headers: {
+				"Content-Type": "application/json"
+			},
+			method: "GET"
+		});
+
 		resp = await fetch(randomEndpoint.url, {
 			headers: {
 				"Content-Type": "application/json"
