@@ -14,7 +14,7 @@ export async function generateQuery(messages: Message[]) {
 	// 	currentDate,
 	// });
 	const prepromt = ""
-	const searchQuery = await generateFromDefaultEndpoint("Сгенерируй поисковый запрос для последующего текста. "+lastMessage.content, {}, prepromt);
+	const searchQuery = await generateFromDefaultEndpoint("Сгенерируй поисковый запрос для текста после слова \"вопрос: \". Ответь только текстом запроса. Если тебе нужно больше информации для составления запроса, то сгенерируй наиболее общий запрос для вопроса. Вопрос: "+lastMessage.content, {}, prepromt);
 	console.log('searchQuery', searchQuery)
 	// .then((query) => {
 	// 	// example of generating google query:
