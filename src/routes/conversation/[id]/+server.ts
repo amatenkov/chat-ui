@@ -262,10 +262,10 @@ export async function POST({ request, fetch, locals, params, getClientAddress })
 				inputData.messages = [{from: 'user', content: prompt}]
 			}
 			
-			if(inputData.messages.length > 5)
-				inputData.messages = inputData.messages.slice(-5);
+			if(inputData.messages.length > 10)
+				inputData.messages = inputData.messages.slice(-10);
 
-			inputData.messages.map(m => { m.content = m.content.slice(0, 1000) })
+			inputData.messages.map(m => { m.content = m.content.slice(0, 5000) })
 			
 			// Fetch text data from the Flask API asynchronously
 			try {

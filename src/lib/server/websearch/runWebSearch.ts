@@ -11,7 +11,7 @@ import {
 import type { Conversation } from "$lib/types/Conversation";
 import type { MessageUpdate } from "$lib/types/MessageUpdate";
 
-const MAX_N_PAGES_SCRAPE = 5 as const;
+const MAX_N_PAGES_SCRAPE = 10 as const;
 const MAX_N_PAGES_EMBED = 5 as const;
 
 export async function runWebSearch(
