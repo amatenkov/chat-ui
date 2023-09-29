@@ -18,8 +18,8 @@ export async function searchWeb(query: string) {
 export async function searchWebSerper(query: string) {
 	const params = {
 		q: query,
-		hl: "en",
-		gl: "us",
+		hl: "ru",
+		gl: "ru",
 	};
 
 	const response = await fetch("https://google.serper.dev/search", {
