@@ -82,11 +82,11 @@ export async function runWebSearch(
 		appendUpdate("Получение релевантной информации");
 		const topKClosestParagraphs = 8;
 
-		const explodedTexts = paragraphChunks.flatMap(({ text }) => text.split('.'));
-		
-		const indices = await findSimilarSentences(prompt, explodedTexts);//, { topK: topKClosestParagraphs});
+		//const explodedTexts = paragraphChunks.flatMap(({ text }) => text.split('.'));
+		const texts = paragraphChunks.map(({ text }) => text);
+		const indices = await findSimilarSentences(prompt, texts);//, { topK: topKClosestParagraphs});
 		// webSearch.context = indices.map((idx) => texts[idx]).join("");
-		webSearch.context = indices.join(". ").slice(0, 1000);
+		webSearch.context = indices.join(". ").slice(0, 1700);
 		updatePad({
 			type: "webSearch",
 			messageType: "sources",
