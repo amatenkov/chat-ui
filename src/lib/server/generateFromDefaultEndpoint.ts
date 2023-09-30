@@ -53,10 +53,10 @@ export async function generateFromDefaultEndpoint(
 		console.log('generateFromDefaultEndpoint params', JSON.stringify({
 			parameters: newParameters,
 			preprompt: preprompt,
-			messages: [{from: 'user', content: prompt}],
+			messages: [{ from: 'user', content: prompt }],
 		}))
 
-		await fetch(randomEndpoint.url+'/reset', {
+		await fetch(randomEndpoint.url + '/reset', {
 			headers: {
 				"Content-Type": "application/json"
 			},
@@ -71,7 +71,7 @@ export async function generateFromDefaultEndpoint(
 			body: JSON.stringify({
 				parameters: newParameters,
 				preprompt: preprompt,
-				messages: [{from: 'user', content: prompt}],
+				messages: [{ from: 'user', content: prompt }],
 			})
 		});
 	}
@@ -103,23 +103,99 @@ export async function generateFromDefaultEndpoint(
 	console.log('Model raw result:', result)
 	return result;
 
-	let results;
-	if (result.startsWith("data:")) {
-		results = [JSON.parse(result.split("data:")?.pop() ?? "")];
-	} else {
-		results = JSON.parse(result);
-	}
+	// let results;
+	// if (result.startsWith("data:")) {
+	// 	results = [JSON.parse(result.split("data:")?.pop() ?? "")];
+	// } else {
+	// 	results = JSON.parse(result);
+	// }
 
-	let generated_text = trimSuffix(
-		trimPrefix(trimPrefix(results[0].generated_text, "<|startoftext|>"), prompt),
-		PUBLIC_SEP_TOKEN
-	).trimEnd();
+	// let generated_text = trimSuffix(
+	// 	trimPrefix(trimPrefix(results[0].generated_text, "<|startoftext|>"), prompt),
+	// 	PUBLIC_SEP_TOKEN
+	// ).trimEnd();
 
-	for (const stop of [...(newParameters?.stop ?? []), "<|endoftext|>"]) {
-		if (generated_text.endsWith(stop)) {
-			generated_text = generated_text.slice(0, -stop.length).trimEnd();
+	// for (const stop of [...(newParameters?.stop ?? []), "<|endoftext|>"]) {
+	// 	if (generated_text.endsWith(stop)) {
+	// 		generated_text = generated_text.slice(0, -stop.length).trimEnd();
+	// 	}
+	// }
+
+	// return generated_text;
+}
+
+export async function generateSearchQuery(prompt: string,
+	parameters?: Partial<Parameters>,
+	maxRetries: number = 3
+): Promise<string> {
+
+	const newParameters = {
+		...defaultModel.parameters,
+		...parameters,
+		return_full_text: false,
+	};
+
+	const randomEndpoint = modelEndpoint(defaultModel);
+	const apiUrl = randomEndpoint.url+'/search_request'; // Replace with your Flask API URL
+	const requestOptions = {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			query: "Сгенерируй поисковый запрос для ответа на запрос пользователя: "+prompt,
+			preprompt: "."
+		}),
+	};
+
+	let retries = 0;
+
+	await fetch(randomEndpoint.url+'/stop_generation', {
+		method: "GET"
+	});
+	
+	while (retries < maxRetries) {
+		try {
+			const response = await fetch(apiUrl, requestOptions);
+
+			if (!response.ok) {
+				console.error(`HTTP ${response.status} - ${response.statusText}`);
+				throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+			}
+
+			// Check if the response has a body
+			if (!response.body) {
+				console.error(response);
+				throw new Error('Response has no body');
+			}
+
+			const textDecoder = new TextDecoder();
+			const reader = response.body.getReader();
+			let fullText = '';
+
+			while (true) {
+				const { done, value } = await reader.read();
+
+				if (done) {
+					reader.releaseLock();
+					break;
+				}
+
+				// Process the chunk of text (value) here
+				const chunk = textDecoder.decode(value);
+				fullText += chunk
+			}
+			
+			return fullText;
+
+		} catch (error) {
+			console.error('Error:', error);
+			retries++;
+			console.log(`Retrying request (${retries}/${maxRetries})...`);
+			continue; // Retry the loop
+
 		}
 	}
 
-	return generated_text;
+	throw new Error(`Max retries (${maxRetries}) exceeded.`);
 }

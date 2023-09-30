@@ -5,8 +5,8 @@ import { generateQuery } from "$lib/server/websearch/generateQuery";
 import { parseWeb } from "$lib/server/websearch/parseWeb";
 import { chunk } from "$lib/utils/chunk";
 import {
-	MAX_SEQ_LEN as CHUNK_CAR_LEN,
-	findSimilarSentences,
+	MAX_SEQ_LEN as CHUNK_CAR_LEN//,
+	//findSimilarSentences,
 } from "$lib/server/websearch/sentenceSimilarity";
 import type { Conversation } from "$lib/types/Conversation";
 import type { MessageUpdate } from "$lib/types/MessageUpdate";
@@ -81,27 +81,32 @@ export async function runWebSearch(
 
 		appendUpdate("Получение релевантной информации");
 		const topKClosestParagraphs = 8;
-		
-		const texts = paragraphChunks.map(({ text }) => text);
-		const indices = await findSimilarSentences(prompt, texts, {
-			topK: topKClosestParagraphs,
-		});
-		webSearch.context = indices.map((idx) => texts[idx]).join("");
 
-		const usedSources = new Set<string>();
-		for (const idx of indices) {
-			const { source } = paragraphChunks[idx];
-			if (!usedSources.has(source.link)) {
-				usedSources.add(source.link);
-				webSearch.contextSources.push(source);
-				updatePad({
-					type: "webSearch",
-					messageType: "sources",
-					message: "sources",
-					sources: webSearch.contextSources,
-				});
-			}
-		}
+		const explodedTexts = paragraphChunks.flatMap(({ text }) => text.split('.'));
+		
+		const indices = await findSimilarSentences(prompt, explodedTexts);//, { topK: topKClosestParagraphs});
+		// webSearch.context = indices.map((idx) => texts[idx]).join("");
+		webSearch.context = indices.join(". ").slice(0, 1000);
+		updatePad({
+			type: "webSearch",
+			messageType: "sources",
+			message: "sources",
+			sources: [],
+		});
+		// const usedSources = new Set<string>();
+		// for (const idx of indices) {
+		// 	const { source } = paragraphChunks[idx];
+		// 	if (!usedSources.has(source.link)) {
+		// 		usedSources.add(source.link);
+		// 		webSearch.contextSources.push(source);
+		// 		updatePad({
+		// 			type: "webSearch",
+		// 			messageType: "sources",
+		// 			message: "sources",
+		// 			sources: webSearch.contextSources,
+		// 		});
+		// 	}
+		// }
 	} catch (searchError) {
 		if (searchError instanceof Error) {
 			appendUpdate(
@@ -113,4 +118,46 @@ export async function runWebSearch(
 	}
 
 	return webSearch;
+}
+
+
+async function findSimilarSentences(query: string, sentences: string[]): Promise<string[]> {
+
+	const apiUrl = 'https://muryshev-e5-sentence-similarity.hf.space/get_similar_sentences';
+	const requestOptions = {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			query: query,
+			sentences: sentences,
+			threshold: 0.8
+		}),
+	};
+
+	let retries = 0;
+	const maxRetries = 3;
+
+	while (retries < maxRetries) {
+		try {
+			const response = await fetch(apiUrl, requestOptions);
+			if (!response.ok) {
+				throw new Error('Network response was not ok');
+			}
+
+			const jsonData = await response.json();
+
+			return jsonData.result;
+
+		} catch (error) {
+			console.error('Error:', error);
+			retries++;
+			console.log(`Retrying request (${retries}/${maxRetries})...`);
+			continue; // Retry the loop
+
+		}
+	}
+
+	throw new Error(`Max retries (${maxRetries}) exceeded.`);
 }

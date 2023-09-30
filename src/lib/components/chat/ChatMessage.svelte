@@ -182,38 +182,6 @@
 				</div>
 			{/if}
 		</div>
-		{#if isAuthor && !loading && message.content}
-			<div
-				class="absolute bottom-1 right-0 flex max-md:transition-all md:bottom-0 md:group-hover:visible md:group-hover:opacity-100
-					{message.score ? 'visible opacity-100' : 'invisible max-md:-translate-y-4 max-md:opacity-0'}
-					{isTapped ? 'max-md:visible max-md:translate-y-0 max-md:opacity-100' : ''}
-				"
-			>
-				<button
-					class="btn rounded-sm p-1 text-sm text-gray-400 focus:ring-0 hover:text-gray-500 dark:text-gray-400 dark:hover:text-gray-300
-					{message.score && message.score > 0
-						? 'text-green-500 hover:text-green-500 dark:text-green-400 hover:dark:text-green-400'
-						: ''}"
-					title={message.score === 1 ? "Remove +1" : "+1"}
-					type="button"
-					on:click={() => dispatch("vote", { score: message.score === 1 ? 0 : 1, id: message.id })}
-				>
-					<CarbonThumbsUp class="h-[1.14em] w-[1.14em]" />
-				</button>
-				<button
-					class="btn rounded-sm p-1 text-sm text-gray-400 focus:ring-0 hover:text-gray-500 dark:text-gray-400 dark:hover:text-gray-300
-					{message.score && message.score < 0
-						? 'text-red-500 hover:text-red-500 dark:text-red-400 hover:dark:text-red-400'
-						: ''}"
-					title={message.score === -1 ? "Remove -1" : "-1"}
-					type="button"
-					on:click={() =>
-						dispatch("vote", { score: message.score === -1 ? 0 : -1, id: message.id })}
-				>
-					<CarbonThumbsDown class="h-[1.14em] w-[1.14em]" />
-				</button>
-			</div>
-		{/if}
 	</div>
 {/if}
 {#if message.from === "user"}
@@ -224,30 +192,5 @@
 		>
 			{message.content.trim()}
 		</div>
-		{#if !loading}
-			<div class="absolute right-0 top-3.5 flex gap-2 lg:-right-2">
-				{#if downloadLink}
-					<a
-						class="rounded-lg border border-gray-100 p-1 text-xs text-gray-400 group-hover:block hover:text-gray-500 dark:border-gray-800 dark:text-gray-400 dark:hover:text-gray-300 md:hidden"
-						title="Download prompt and parameters"
-						type="button"
-						target="_blank"
-						href={downloadLink}
-					>
-						<CarbonDownload />
-					</a>
-				{/if}
-				{#if !readOnly}
-					<button
-						class="cursor-pointer rounded-lg border border-gray-100 p-1 text-xs text-gray-400 group-hover:block hover:text-gray-500 dark:border-gray-800 dark:text-gray-400 dark:hover:text-gray-300 md:hidden lg:-right-2"
-						title="Retry"
-						type="button"
-						on:click={() => dispatch("retry", { content: message.content, id: message.id })}
-					>
-						<CarbonRotate360 />
-					</button>
-				{/if}
-			</div>
-		{/if}
 	</div>
 {/if}

@@ -222,10 +222,7 @@ export async function POST({ request, fetch, locals, params, getClientAddress })
 
 				let retries = 0;
 
-				await fetch(randomEndpoint.url+'/reset', {
-					headers: {
-						"Content-Type": "application/json"
-					},
+				await fetch(randomEndpoint.url+'/stop_generation', {
 					method: "GET"
 				});
 
@@ -258,7 +255,7 @@ export async function POST({ request, fetch, locals, params, getClientAddress })
 			}
 
 			const inputData = {
-				messages: messages,
+				messages: messages.filter(o => !o.webSearch),
 				parameters: {
 					...models.find((m) => m.id === conv.model)?.parameters,
 					return_full_text: false,
@@ -269,8 +266,8 @@ export async function POST({ request, fetch, locals, params, getClientAddress })
 				inputData.messages = [{from: 'user', content: prompt}]
 			}
 			
-			 if(inputData.messages.length > 1)
-			 	inputData.messages = inputData.messages.slice(-1);
+			//  if(inputData.messages.length > 1)
+			//  	inputData.messages = inputData.messages.slice(-1);
 
 			// const concatenatedContent = messages.reduce((accumulator, message) => {
 			// 	if (message.from === 'user') {

@@ -1,6 +1,6 @@
 import type { Message } from "$lib/types/Message";
 import { format } from "date-fns";
-import { generateFromDefaultEndpoint } from "../generateFromDefaultEndpoint";
+import { generateFromDefaultEndpoint, generateSearchQuery } from "../generateFromDefaultEndpoint";
 import { defaultModel } from "../models";
 
 export async function generateQuery(messages: Message[]) {
@@ -14,44 +14,18 @@ export async function generateQuery(messages: Message[]) {
 	// 	currentDate,
 	// });
 	const prepromt = ""
-	let searchQuery = await generateFromDefaultEndpoint("Тебе предстоит ответить на запрос пользователя. Если ты не знаешь точно то, о чем говорит пользователь, сгенерируй запрос для google search. Запрос пользователя: "+lastMessage.content, {}, prepromt);
+	let searchQuery = await generateSearchQuery(lastMessage.content, {});
 	
-	const regex = /"([^"]+)"/;
-	const matches = searchQuery.match(regex);
+	// const regex = /"([^"]+)"/;
+	// const matches = searchQuery.match(regex);
 
-	if (matches && matches.length > 1) {
-		searchQuery = matches[1];
-	}
+	// if (matches && matches.length > 1) {
+	// 	searchQuery = matches[1];
+	// }
 	console.log('searchQuery', searchQuery)
-	// .then((query) => {
-	// 	// example of generating google query:
-	// 	// case 1
-	// 	// user: tell me what happened yesterday
-	// 	// LLM: google query is "news september 12, 2023"
-	// 	// the regex below will try to capture the last "phrase" (i.e. words between quotes or double quotes or ticks)
-	// 	// in this case, it is "news september 12, 2023"
-	// 	// if there is no "phrase", we will just use the user query, which was "tell me what happened yesterday"
-	// 	console.log('generateQuery query', query)
-	// 	const regexLastPhrase = /("|'|`)((?:(?!\1).)+)\1$/;
-	// 	let match = query.match(regexLastPhrase);
-	// 	if (match) {
-	// 		return match[2];
-	// 	}
-
-	// 	// case 2
-	// 	// user: tell me what happened yesterday
-	// 	// LLM: Here is a query: news september 12, 2023
-	// 	// the regex below will try to capture the last sentences starting from :
-	// 	// in this case, it is "news september 12, 2023"
-	// 	// if there is no math, we will just use the user query, which was "tell me what happened yesterday"
-	// 	const regexColon = /:\s(.*)$/;
-	// 	match = query.match(regexColon);
-	// 	if (match) {
-	// 		return match[1];
-	// 	}
-	// 	console.log('generateQuery lastMessage.content', lastMessage.content)
-	// 	return lastMessage.content;
-	// });
+	
 
 	return searchQuery;
 }
+
+

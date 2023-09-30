@@ -27,6 +27,5 @@ export async function parseWeb(url: string) {
 
 	// combine text contents from paragraphs and then remove newlines and multiple spaces
 	const text = paragraphTexts.join(" ").replace(/ {2}|\r\n|\n|\r/gm, "");
-
 	return text;
 }
