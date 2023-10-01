@@ -136,15 +136,27 @@ export async function generateSearchQuery(prompt: string,
 	};
 
 	const randomEndpoint = modelEndpoint(defaultModel);
-	const apiUrl = randomEndpoint.url+'/search_request'; // Replace with your Flask API URL
+	// const apiUrl = randomEndpoint.url+'/search_request'; // Replace with your Flask API URL
+	// const requestOptions = {
+	// 	method: 'POST',
+	// 	headers: {
+	// 		'Content-Type': 'application/json',
+	// 	},
+	// 	body: JSON.stringify({
+	// 		query: "Сгенерируй запрос в поисковую систему для ответа на вопрос \""+prompt+"\". Используй русский язык. Выбери один наиболее релевантный запрос. Ответь только текстом запроса без лишних символов и слов.",
+	// 		preprompt: "" //Ты — русскоязычный автоматический ассистент для написании запросов для поисковых систем на русском языке. Отвечай на сообщения пользователя только текстом поискового запроса, релевантным запросу пользователя. Если запрос пользователя уже хорош, используй его в качестве результата.
+	// 	}),
+	// };
+	
+	const apiUrl = randomEndpoint.url;
 	const requestOptions = {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
-			query: "Сгенерируй поисковый запрос для ответа на запрос пользователя: "+prompt,
-			preprompt: "."
+			messages: [{from: 'user', content: "Сгенерируй запрос в поисковую систему для ответа на вопрос \""+prompt+"\". Используй русский язык. Выбери один наиболее релевантный запрос. Ответь только текстом запроса без лишних символов и слов."}],
+			preprompt: "" //Ты — русскоязычный автоматический ассистент для написании запросов для поисковых систем на русском языке. Отвечай на сообщения пользователя только текстом поискового запроса, релевантным запросу пользователя. Если запрос пользователя уже хорош, используй его в качестве результата.
 		}),
 	};
 
@@ -153,7 +165,7 @@ export async function generateSearchQuery(prompt: string,
 	await fetch(randomEndpoint.url+'/stop_generation', {
 		method: "GET"
 	});
-	
+
 	while (retries < maxRetries) {
 		try {
 			const response = await fetch(apiUrl, requestOptions);
