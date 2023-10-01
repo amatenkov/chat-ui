@@ -86,7 +86,7 @@ export async function runWebSearch(
 		const texts = paragraphChunks.map(({ text }) => text);
 		const indices = await findSimilarSentences(prompt, texts);//, { topK: topKClosestParagraphs});
 		// webSearch.context = indices.map((idx) => texts[idx]).join("");
-		webSearch.context = indices.join(". ").slice(0, 1700);
+		webSearch.context = indices.join(" ").slice(0, 3500);
 		updatePad({
 			type: "webSearch",
 			messageType: "sources",
