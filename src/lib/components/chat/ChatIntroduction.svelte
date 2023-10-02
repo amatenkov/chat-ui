@@ -30,7 +30,7 @@
 <div class="my-auto grid gap-8 lg:grid-cols-3">
 	
 	
-	{#if currentModelMetadata.promptExamples}
+	{#if currentModelMetadata.promptExamples && currentModelMetadata.promptExamples.length > 0}
 		<div class="lg:col-span-3 lg:mt-6">
 			<p class="mb-3 text-gray-600 dark:text-gray-300">Примеры запросов</p>
 			<div class="grid gap-3 lg:grid-cols-3 lg:gap-5">
