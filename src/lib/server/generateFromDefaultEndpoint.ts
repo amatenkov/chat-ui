@@ -128,7 +128,7 @@ export async function generateSearchQuery(prompt: string,
 	parameters?: Partial<Parameters>,
 	maxRetries: number = 3
 ): Promise<string> {
-
+	
 	const newParameters = {
 		...defaultModel.parameters,
 		...parameters,
@@ -155,7 +155,7 @@ export async function generateSearchQuery(prompt: string,
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
-			messages: [{from: 'user', content: "Сгенерируй запрос в поисковую систему для ответа на вопрос \""+prompt+"\". Используй русский язык. Выбери один наиболее релевантный запрос. Ответь только текстом запроса без лишних символов и слов."}],
+			messages: [{from:'user', content: `Исправь ошибки в запросе "${prompt}". Верни только исправленный текст.`}],//[{from: 'user', content: "Сгенерируй запрос в поисковую систему для ответа на вопрос \""+prompt+"\". Используй русский язык. Выбери один наиболее релевантный запрос. Ответь только текстом запроса без лишних символов и слов."}],
 			preprompt: "" //Ты — русскоязычный автоматический ассистент для написании запросов для поисковых систем на русском языке. Отвечай на сообщения пользователя только текстом поискового запроса, релевантным запросу пользователя. Если запрос пользователя уже хорош, используй его в качестве результата.
 		}),
 	};

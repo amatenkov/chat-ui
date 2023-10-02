@@ -54,11 +54,15 @@ export async function runWebSearch(
 			.filter(({ link }) => !link.includes("youtube.com")) // filter out youtube links
 			.slice(0, MAX_N_PAGES_SCRAPE); // limit to first 10 links only
 
-		let paragraphChunks: { source: WebSearchSource; text: string }[] = [];
+		// let paragraphChunks: { source: WebSearchSource; text: string }[] = [];
+		let texts :string[] = [];
 		if (webSearch.results.length > 0) {
 			appendUpdate("Обработка результатов");
-			const promises = webSearch.results.map(async (result) => {
-				const { link } = result;
+
+			
+			for(const i in webSearch.results) {
+				if(texts.length > 30) break;
+				const { link } = webSearch.results[i];
 				let text = "";
 				try {
 					text = await parseWeb(link);
@@ -66,27 +70,40 @@ export async function runWebSearch(
 				} catch (e) {
 					console.error(`Error parsing webpage "${link}"`, e);
 				}
-				const MAX_N_CHUNKS = 100;
-				const texts = chunk(text, CHUNK_CAR_LEN).slice(0, MAX_N_CHUNKS);
-				return texts.map((t) => ({ source: result, text: t }));
-			});
-			const nestedParagraphChunks = (await Promise.all(promises)).slice(0, MAX_N_PAGES_EMBED);
-			paragraphChunks = nestedParagraphChunks.flat();
-			if (!paragraphChunks.length) {
-				//throw new Error("No text found on the first 5 results");
+				const MAX_N_CHUNKS = 20;
+				texts.push(...chunk(text, CHUNK_CAR_LEN).slice(0, MAX_N_CHUNKS));
 			}
+
+			// const promises = webSearch.results.map(async (result) => {
+			// 	const { link } = result;
+			// 	let text = "";
+			// 	try {
+			// 		text = await parseWeb(link);
+			// 		appendUpdate("Обработка страницы", [link]);
+			// 	} catch (e) {
+			// 		console.error(`Error parsing webpage "${link}"`, e);
+			// 	}
+			// 	const MAX_N_CHUNKS = 20;
+			// 	const texts = chunk(text, CHUNK_CAR_LEN).slice(0, MAX_N_CHUNKS);
+			// 	return texts.map((t) => ({ source: result, text: t }));
+			// });
+			// const nestedParagraphChunks = (await Promise.all(promises)).slice(0, MAX_N_PAGES_EMBED);
+			// paragraphChunks = nestedParagraphChunks.flat();
+			// if (!paragraphChunks.length) {
+			// 	//throw new Error("No text found on the first 5 results");
+			// }
 		} else {
 			//throw new Error("No results found for this search query");
 		}
 
 		appendUpdate("Получение релевантной информации");
-		const topKClosestParagraphs = 8;
+		// const topKClosestParagraphs = 8;
 
 		//const explodedTexts = paragraphChunks.flatMap(({ text }) => text.split('.'));
-		const texts = paragraphChunks.map(({ text }) => text);
+		// const texts = paragraphChunks.map(({ text }) => text);
 		const indices = await findSimilarSentences(prompt, texts);//, { topK: topKClosestParagraphs});
 		// webSearch.context = indices.map((idx) => texts[idx]).join("");
-		webSearch.context = indices.join(" ").slice(0, 3500);
+		webSearch.context = indices.join(" ").slice(0, 3700);
 		updatePad({
 			type: "webSearch",
 			messageType: "sources",

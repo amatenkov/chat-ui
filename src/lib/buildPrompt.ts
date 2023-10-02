@@ -30,7 +30,7 @@ export async function buildPrompt({
 			//...messagesWithoutLastUsrMsg,
 			{
 				from: "user",
-				content: `Ответь на запрос "${lastUserMsg.content}". Не предоставляй ложную информацию. Дополняй или заменяй свои знания фактами "${webSearch.context}"`,
+				content: `Ответь на запрос "${lastUserMsg.content}". Не повторяй текст запроса. Отвечай подробно. Предположим, что следующий текст содержит правдивую информацию: ${webSearch.context}"`,
 			},
 		];
 	}
