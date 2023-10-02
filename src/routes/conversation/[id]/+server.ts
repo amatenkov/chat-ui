@@ -222,9 +222,9 @@ export async function POST({ request, fetch, locals, params, getClientAddress })
 
 				let retries = 0;
 
-				await fetch(randomEndpoint.url+'/stop_generation', {
-					method: "GET"
-				});
+				// await fetch(randomEndpoint.url+'/stop_generation', {
+				// 	method: "GET"
+				// });
 
 				while (retries < maxRetries) {
 					try {
@@ -341,6 +341,10 @@ export async function POST({ request, fetch, locals, params, getClientAddress })
 
 			} catch (error) {
 				console.error('Error fetching data from Flask API:', error);
+				update({
+					type: "finalAnswer",
+					text: '',
+				});
 			}
 
 

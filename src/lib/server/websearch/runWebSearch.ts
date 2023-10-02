@@ -73,10 +73,10 @@ export async function runWebSearch(
 			const nestedParagraphChunks = (await Promise.all(promises)).slice(0, MAX_N_PAGES_EMBED);
 			paragraphChunks = nestedParagraphChunks.flat();
 			if (!paragraphChunks.length) {
-				throw new Error("No text found on the first 5 results");
+				//throw new Error("No text found on the first 5 results");
 			}
 		} else {
-			throw new Error("No results found for this search query");
+			//throw new Error("No results found for this search query");
 		}
 
 		appendUpdate("Получение релевантной информации");
